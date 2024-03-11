@@ -35,7 +35,7 @@ public class Helper {
     }
 
     public static void createInstance() throws IOException {
-        String url = Utility.getValue("Launch", "websiteRecruiterProduction");
+        String url = Utility.getValue("Launch", "websiteRecruiterStage");
         String browser = Utility.getValue("Launch", "Browser");
         driver = BrowserFactory.startBrowser(browser, url);
     }

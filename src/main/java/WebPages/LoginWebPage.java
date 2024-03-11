@@ -4,6 +4,7 @@ import Helpers.Helper;
 import Helpers.Utility;
 import Helpers.Waits;
 import WebElementPaths.LoginElements;
+import jdk.jshell.execution.Util;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -37,6 +38,12 @@ public class LoginWebPage extends Helper {
     WebElement stageAnchorList;
     @FindBy(xpath = LoginElements.betaAnchorList)
     WebElement betaAnchorList;
+    @FindBy(xpath = LoginElements.adminEmail)
+    WebElement adminEmail;
+    @FindBy(xpath = LoginElements.adminPassword)
+    WebElement adminPassword;
+    @FindBy(css = LoginElements.adminContinueButton)
+    WebElement adminContinueButton;
 
     public void serverError() throws IOException {
         String url = driver.getCurrentUrl();
@@ -51,6 +58,12 @@ public class LoginWebPage extends Helper {
             loginUser(driver, landingLoginButton, emailField,
                     Utility.getValue("Credentials", "employerEmailBeta"), passwordField,
                     Utility.getValue("Credentials", "passwordBeta"), loginButton, LoginElements.betaAnchorList);
+        } else if (url.equalsIgnoreCase(Utility.getValue("Credentials", "superAdminEmailBeta"))) {
+            System.out.println("In SuperAdmin Beta Else If Statement");
+            loginSuperAdmin(driver, adminEmail,
+                    Utility.getValue("Credentials", "superAdminEmailBeta"), adminPassword,
+                    Utility.getValue("Credentials", "superAdminBetaPassword"), adminContinueButton,
+                    LoginElements.betaSuperAdminAnchorList);
         } else if (url.equalsIgnoreCase(Utility.getValue("Launch", "websiteRecruiterStage"))) {
             System.out.println("In Recruiter Stage Else If statement");
             loginUser(driver, landingLoginButton, emailField,
@@ -71,6 +84,12 @@ public class LoginWebPage extends Helper {
             loginUser(driver, landingLoginButton, emailField,
                     Utility.getValue("Credentials", "employerEmailProduction"), passwordField,
                     Utility.getValue("Credentials", "passwordProduction"), loginButton, LoginElements.productionAnchorList);
+        } else if (url.equalsIgnoreCase(Utility.getValue("Launch", "websiteSuperAdminProduction"))) {
+            System.out.println("In SuperAdmin Production Else If Statement");
+            loginSuperAdmin(driver, adminEmail,
+                    Utility.getValue("Credentials", "superAdminEmailProduction"), adminPassword,
+                    Utility.getValue("Credentials", "superAdminProductionPassword"), adminContinueButton,
+                    LoginElements.productionSuperAdminAnchorList);
         }
     }
 
@@ -108,6 +127,15 @@ public class LoginWebPage extends Helper {
         Waits.sendKeys(driver, emailField, email, 30);
         Waits.sendKeys(driver, passwordField, password, 30);
         Waits.clickButton(driver, loginButton, 30);
+        linksToVerifyStatus(anchorList);
+    }
+    public void loginSuperAdmin(WebDriver driver, WebElement adminEmailField, String adminEmail, WebElement adminPasswordField, String adminPassword, WebElement continueButton, String anchorList) {
+        Waits.sendKeys(driver, adminEmailField, adminEmail, 30);
+        Waits.sendKeys(driver, adminPasswordField, adminPassword, 30);
+        Waits.clickButton(driver, continueButton, 30);
+        linksToVerifyStatus(anchorList);
+    }
+    public void linksToVerifyStatus(String anchorList) {
         List<WebElement> links = driver.findElements(By.xpath(anchorList));
         List<String> linksToCheck = new ArrayList<>();
         for (WebElement link : links) {
